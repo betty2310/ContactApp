@@ -2,20 +2,38 @@ package com.example.contactapp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.contactapp.adapter.ContactAdapter
-import com.example.contactapp.databinding.ActivityMainBinding
+import android.view.Menu
+import android.view.MenuItem
+import androidx.navigation.findNavController
 import com.example.contactapp.model.Contact
 
 class MainActivity : AppCompatActivity() {
-
-    private lateinit var binding: ActivityMainBinding
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_main)
 
-        var contactList = listOf<Contact>(
+        val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.toolbar_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.new_contact_menu -> {
+                val navController = findNavController(R.id.nav_host_fragment)
+                navController.navigate(R.id.nav_new_contact)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    companion object {
+        val contactList: MutableList<Contact> = mutableListOf<Contact>(
             Contact("Betty Holberton", "555-555-5555", "Betty@gmail.com", 1),
             Contact("Grace Hopper", "123-456-7890", "grace@example.com", 2),
             Contact("Ada Lovelace", "987-654-3210", "ada@example.com", 3),
@@ -27,8 +45,5 @@ class MainActivity : AppCompatActivity() {
             Contact("Donald Knuth", "666-555-4444", "donald@example.com", 9),
             Contact("Grace Murray Hopper", "222-333-4444", "grace.murray@example.com", 10)
         )
-
-        binding.recyclerView.adapter = ContactAdapter(contactList)
-        binding.recyclerView.setHasFixedSize(true)
     }
 }
